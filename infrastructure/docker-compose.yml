@@ -58,21 +58,18 @@ services:
       - spark-conf/worker:/conf
       - data:/tmp/data
     deploy:
+      mode: replicated
+      replicas: 4
       placement:
         constraints:
           - node.role == worker-node-spark
       limits:
-        cpus: '2.00'
-        memory: 4g
+        cpus: '1.00'
+        memory: 3g
       restart_policy:
               condition: on-failure
     networks:
       thesisnet:
-        aliases:
-          - spark-worker
-volumes:
-  - ./docker-spark/conf:/spark-conf
-  - ./data:/data
 networks:
   thesisnet:
     driver: overlay
