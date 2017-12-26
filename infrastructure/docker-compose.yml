@@ -28,7 +28,7 @@ services:
     deploy:
       placement:
         constraints:
-          - node.role == manager-node
+          - danir2.machine.role=manager
     networks:
       thesisnet:
         aliases:
@@ -59,10 +59,10 @@ services:
       - data:/tmp/data
     deploy:
       mode: replicated
-      replicas: 4
+      replicas: 3
       placement:
         constraints:
-          - node.role == worker-node-spark
+          - danir2.machine.role=worker
       limits:
         cpus: '1.00'
         memory: 3g

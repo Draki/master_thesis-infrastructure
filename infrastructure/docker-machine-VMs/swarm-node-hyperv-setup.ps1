@@ -17,15 +17,14 @@ $SwitchName = "DockerNAT"
 echo "======> Creating manager machines ..."
 for ($node=1;$node -le $managers;$node++) {
 	echo "======> Creating manager$node machine ..."
-	echo "docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName ('manager'+$node)"
-	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName ('manager'+$node)
+	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine.role=manager ('manager'+$node)
 }
 
 # create worker machines
 echo "======> Creating worker machines ..."
 for ($node=1;$node -le $workers;$node++) {
 	echo "======> Creating worker$node machine ..."
-	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName ('worker'+$node)
+	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine.role=worker ('worker'+$node)
 }
 
 # list all machines
