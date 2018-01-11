@@ -69,16 +69,12 @@ RUN curl -sL --retry 3 \
  && mv /usr/$SPARK_PACKAGE $SPARK_HOME \
  && chown -R root:root $SPARK_HOME
 
-# Copy configuration files of master and worker to the image
-RUN mkdir conf
-RUN mkdir conf/master
-RUN mkdir conf/worker
-COPY ./conf/master conf/master
-COPY ./conf/worker conf/worker
+# Copy configuration files to the image
+COPY ./conf .
 
 # Copy developed analyzer app files of master and worker to the image
 RUN mkdir app
-COPY ../../app/src/main/scala/SimpleApp.jar app
+COPY apps/simpleapp_2.11-1.0.jar app
 
 WORKDIR $SPARK_HOME
 CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]

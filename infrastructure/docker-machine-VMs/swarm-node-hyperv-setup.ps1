@@ -1,9 +1,10 @@
 # From:  https://github.com/docker/labs/blob/master/swarm-mode/beginner-tutorial/
 # Modified by: Daniel Rodriguez Rodriguez
+#
+# At the Hyper-V Manager app on Windows, create a Virtual Switch called "virtualPFC" as a "external network" under an "ethernet adapter"
 # Run from PowerShell console as Administrator with the command:
-#   powershell -executionpolicy bypass -File C:\Users\drago\IdeaProjects\master_thesis\infrastructure\docker-machine-VMs\swarm-node-hyperv-setup.ps1
+#   powershell -executionpolicy bypass -File C:\Users\drago\IdeaProjects\master_thesisB\infrastructure\docker-machine-VMs\swarm-node-hyperv-setup.ps1
 
-# At the Hyper-V Manager app on Windows, change the Virtual Switch "DockerNat" to "external network"
 
 # Swarm mode using Docker Machine
 
@@ -11,20 +12,20 @@ $managers=1
 $workers=3
 
 # Change the SwitchName to the name of your virtual switch
-$SwitchName = "DockerNAT"
+$SwitchName = "virtualPFC"
 
 # create manager machines
 echo "======> Creating manager machines ..."
 for ($node=1;$node -le $managers;$node++) {
 	echo "======> Creating manager$node machine ..."
-	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine.role=manager ('manager'+$node)
+	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine=manager ('manager'+$node)
 }
 
 # create worker machines
 echo "======> Creating worker machines ..."
 for ($node=1;$node -le $workers;$node++) {
 	echo "======> Creating worker$node machine ..."
-	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine.role=worker ('worker'+$node)
+	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine=worker ('worker'+$node)
 }
 
 # list all machines
@@ -56,3 +57,7 @@ for ($node=1;$node -le $workers;$node++) {
 
 # show members of swarm
 docker-machine ssh manager1 "docker node ls"
+
+docker-machine env manager1
+
+docker-machine scp ../docker-stack.yml manager1:/home/docker/

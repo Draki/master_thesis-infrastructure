@@ -1,12 +1,12 @@
 version: "3"
 services:
   spark-master:
-    image: gettyimages/spark
+    image: danielrodriguez/distributed-spark-proof
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
     hostname: spark-master
     environment:
       MASTER: spark://spark-master:7077
-      SPARK_CONF_DIR: /conf
+      SPARK_CONF_DIR: /conf/master
       SPARK_PUBLIC_DNS: localhost
     expose:
       - 7001
@@ -22,9 +22,6 @@ services:
       - 6066:6066
       - 7077:7077
       - 8080:8080
-    volumes:
-      - spark-conf/master:/conf
-      - ./data:/tmp/data
     deploy:
       placement:
         constraints:
@@ -35,11 +32,11 @@ services:
           - spark-master
 
   spark-worker:
-    image: gettyimages/spark
+    image: danielrodriguez/distributed-spark-proof
     command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     hostname: spark-worker
     environment:
-      SPARK_CONF_DIR: /conf
+      SPARK_CONF_DIR: /conf/worker
       SPARK_WORKER_CORES: 2
       SPARK_WORKER_MEMORY: 4g
       SPARK_WORKER_PORT: 8881
@@ -54,9 +51,6 @@ services:
       - 7015
       - 7016
       - 8881
-    volumes:
-      - spark-conf/worker:/conf
-      - data:/tmp/data
     deploy:
       mode: replicated
       replicas: 3
