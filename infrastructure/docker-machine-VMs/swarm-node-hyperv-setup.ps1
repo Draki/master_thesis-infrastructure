@@ -14,6 +14,16 @@ $workers=3
 # Change the SwitchName to the name of your virtual switch
 $SwitchName = "virtualPFC"
 
+# Chose a name for the stack and point the stack-descriptor file
+$StackName="TheStackOfDani"
+# $DockerStackFile="https://raw.githubusercontent.com/docker/example-voting-app/master/docker-stack.yml"
+# $DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/master/infrastructure/docker-stack.yml"
+$DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/master/infrastructure/docker-compose.yml"
+
+
+
+$fromNow = Get-Date
+
 # create manager machines
 echo "======> Creating manager machines ..."
 for ($node=1;$node -le $managers;$node++) {
@@ -60,4 +70,21 @@ docker-machine ssh manager1 "docker node ls"
 
 docker-machine env manager1
 
-docker-machine scp ../docker-stack.yml manager1:/home/docker/
+
+
+# GET THE DOCKER-STACK.YML FILE:
+# docker-machine scp ../docker-stack.yml manager1:/home/docker/
+# pscp docker-compose.yml docker@manager1:/home/docker/docker-compose.yml
+docker-machine ssh manager1 "wget $DockerStackFile --no-check-certificate --output-document docker-stack.yml"
+
+# And deploy it:
+docker-machine ssh manager1 "docker stack deploy --compose-file docker-stack.yml $StackName"
+# show the service
+docker-machine ssh manager1 "docker stack services $StackName"
+
+# docker-machine ssh manager1 "docker stack rm $StackName"
+
+
+$timeItTook = (new-timespan -Start $fromNow).TotalSeconds
+echo "======>"
+echo "======> The deployment took: $timeItTook seconds"
