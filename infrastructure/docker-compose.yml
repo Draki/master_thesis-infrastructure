@@ -17,7 +17,7 @@ services:
       - 8080:8080
     deploy:
       placement:
-        constraints: [danir2.machine.role == manager]
+        constraints: [engine.labels.danir2.machine.role == manager]
     networks:
       thesisnet:
         aliases:
@@ -40,7 +40,7 @@ services:
       mode: replicated
       replicas: 3
       placement:
-        constraints: [danir2.machine.role == worker]
+        constraints: [engine.labels.danir2.machine.role == worker]
       restart_policy:
         condition: on-failure
     networks:
