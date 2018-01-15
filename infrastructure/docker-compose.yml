@@ -10,15 +10,6 @@ services:
       MASTER: spark://spark-master:7077
       SPARK_CONF_DIR: /conf/master
       SPARK_PUBLIC_DNS: localhost
-    expose:
-      - 7001
-      - 7002
-      - 7003
-      - 7004
-      - 7005
-      - 7006
-      - 7077
-      - 6066
     ports:
       - 4040:4040
       - 6066:6066
@@ -26,7 +17,7 @@ services:
       - 8080:8080
     deploy:
       placement:
-        constraints: [danir2.machine.role==manager]
+        constraints: [danir2.machine.role == manager]
     networks:
       thesisnet:
         aliases:
@@ -45,18 +36,11 @@ services:
       SPARK_PUBLIC_DNS: localhost
     depends_on:
       - spark-master
-    expose:
-      - 7012
-      - 7013
-      - 7014
-      - 7015
-      - 7016
-      - 8881
     deploy:
       mode: replicated
       replicas: 3
       placement:
-        constraints: [danir2.machine.role==worker]
+        constraints: [danir2.machine.role == worker]
       restart_policy:
         condition: on-failure
     networks:

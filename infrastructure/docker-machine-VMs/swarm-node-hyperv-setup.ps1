@@ -28,14 +28,14 @@ $fromNow = Get-Date
 echo "======> Creating manager machines ..."
 for ($node=1;$node -le $managers;$node++) {
 	echo "======> Creating manager$node machine ..."
-	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine=manager ('manager'+$node)
+	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName ('manager'+$node)
 }
 
 # create worker machines
 echo "======> Creating worker machines ..."
 for ($node=1;$node -le $workers;$node++) {
 	echo "======> Creating worker$node machine ..."
-	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName --engine-label danir2.machine=worker ('worker'+$node)
+	docker-machine create -d hyperv --hyperv-virtual-switch $SwitchName ('worker'+$node)
 }
 
 # list all machines
@@ -63,6 +63,8 @@ for ($node=1;$node -le $workers;$node++) {
 	echo "======> worker$node joining swarm as worker ..."
 	$nodeip = docker-machine ip worker$node
 	docker-machine ssh "worker$node" "docker swarm join --token $workertoken --listen-addr $nodeip --advertise-addr $nodeip $manager1ip"
+	docker-machine ssh "manager1" "docker node update --label-add danir2.machine.role=worker worker$node"
+
 }
 
 # show members of swarm
@@ -70,6 +72,18 @@ docker-machine ssh manager1 "docker node ls"
 
 docker-machine env manager1
 
+
+# label manager nodes as managers
+for ($node=1;$node -le $managers;$node++) {
+	echo "======> manager$node updated with label: danir2.machine.role=manager ..."
+	docker-machine ssh "manager1" "docker node update --label-add danir2.machine.role=manager manager$node"
+}
+
+# label worker nodes as workers
+for ($node=1;$node -le $workers;$node++) {
+	echo "======> worker$node updated with label: danir2.machine.role=worker ..."
+	docker-machine ssh "manager1" "docker node update --label-add danir2.machine.role=worker worker$node"
+}
 
 
 # GET THE DOCKER-STACK.YML FILE:
