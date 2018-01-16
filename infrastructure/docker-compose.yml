@@ -19,14 +19,14 @@ services:
       - type: bind
         read_only: true
         source: E:\app
-        target: app
+        target: /usr/spark-2.2.0/app
       - type: bind
         read_only: true
         source: E:\data
-        target: data
+        target: /usr/spark-2.2.0/data
       - type: bind
         source: E:\result
-        target: result
+        target: /usr/spark-2.2.0/result
     deploy:
       placement:
         constraints: [engine.labels.danir2.machine.role == manager]

@@ -1,24 +1,25 @@
 # From:  https://github.com/docker/labs/blob/master/swarm-mode/beginner-tutorial/
 # Modified by: Daniel Rodriguez Rodriguez
 #
-# At the Hyper-V Manager app on Windows, create a Virtual Switch called "virtualPFC" as a "external network" under an "ethernet adapter"
+# At the Hyper-V Manager app on Windows, under "ethernet adapter", create a Virtual Switch (as an "external network") called:
+$SwitchName = "virtualPFC"
 # Run from PowerShell console as Administrator with the command:
 #   powershell -executionpolicy bypass -File C:\Users\drago\IdeaProjects\master_thesisB\infrastructure\docker-machine-VMs\swarm-node-hyperv-setup.ps1
 
-
 # Swarm mode using Docker Machine
+
+
+# Chose a name for the stack, number of manager machines and number of worker machines
+$StackName="TheStackOfDani"
 
 $managers=1
 $workers=3
 
-# Change the SwitchName to the name of your virtual switch
-$SwitchName = "virtualPFC"
+# Current development github branch
+$GithubBranch="docker_bind_volumes"
 
-# Chose a name for the stack and point the stack-descriptor file
-$StackName="TheStackOfDani"
-# $DockerStackFile="https://raw.githubusercontent.com/docker/example-voting-app/master/docker-stack.yml"
-# $DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/master/infrastructure/docker-stack.yml"
-$DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/master/infrastructure/docker-compose.yml"
+# Pointer to the stack-descriptor file
+$DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/$GithubBranch/infrastructure/docker-compose.yml"
 
 
 
@@ -79,8 +80,6 @@ docker-machine ssh manager1 "wget $DockerStackFile --no-check-certificate --outp
 docker-machine ssh manager1 "docker stack deploy --compose-file docker-stack.yml $StackName"
 # show the service
 docker-machine ssh manager1 "docker stack services $StackName"
-
-# docker-machine ssh manager1 "docker stack rm $StackName"
 
 
 $timeItTook = (new-timespan -Start $fromNow).TotalSeconds
