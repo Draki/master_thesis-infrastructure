@@ -71,10 +71,12 @@ docker-machine ssh manager1 "docker node ls"
 
 
 
+docker-machine ssh manager1 "mkdir app; mkdir data; mkdir results"
 # GET THE DOCKER-STACK.YML FILE:
 # docker-machine scp ../docker-stack.yml manager1:/home/docker/
 # pscp docker-compose.yml docker@manager1:/home/docker/docker-compose.yml
 docker-machine ssh manager1 "wget $DockerStackFile --no-check-certificate --output-document docker-stack.yml"
+docker-machine ssh manager1 "docker stack services $StackName"
 
 # And deploy it:
 docker-machine ssh manager1 "docker stack deploy --compose-file docker-stack.yml $StackName"

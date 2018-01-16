@@ -18,14 +18,14 @@ services:
     volumes:
       - type: volume
         read_only: true
-        source: app
+        source: /home/docker/app
         target: /usr/spark-2.2.0/app
       - type: volume
         read_only: true
-        source: data
+        source: /home/docker/data
         target: /usr/spark-2.2.0/data
       - type: volume
-        source: results
+        source: /home/docker/results
         target: /usr/spark-2.2.0/results
     deploy:
       placement:
