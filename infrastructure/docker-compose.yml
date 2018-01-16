@@ -16,16 +16,16 @@ services:
       - 7077:7077
       - 8080:8080
     volumes:
-      - type: bind
+      - type: volume
         read_only: true
-        source: E:\app
+        source: app
         target: /usr/spark-2.2.0/app
-      - type: bind
+      - type: volume
         read_only: true
-        source: E:\data
+        source: data
         target: /usr/spark-2.2.0/data
-      - type: bind
-        source: E:\result
+      - type: volume
+        source: result
         target: /usr/spark-2.2.0/result
     deploy:
       placement:
@@ -63,8 +63,6 @@ networks:
     driver: overlay
 
 volumes:
-  data:
-    external: true
-    name: my-app-data
   app:
+  data:
   results:

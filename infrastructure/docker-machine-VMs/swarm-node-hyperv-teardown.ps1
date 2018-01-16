@@ -2,6 +2,7 @@
 
 $fromNow = Get-Date
 
+# $StackName="TheStackOfDani"
 # docker-machine ssh manager1 "docker stack rm $StackName"
 
 ### Warning: This will remove all docker machines running ###
