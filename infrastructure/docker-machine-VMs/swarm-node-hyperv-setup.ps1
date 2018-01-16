@@ -86,3 +86,6 @@ docker-machine ssh manager1 "docker stack services $StackName"
 $timeItTook = (new-timespan -Start $fromNow).TotalSeconds
 echo "======>"
 echo "======> The deployment took: $timeItTook seconds"
+
+echo "======>"
+echo "======> You can access to the web user interface of the spark master at: $manager1ip:8080"

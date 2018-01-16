@@ -1,9 +1,9 @@
-version: "3"
+version: '3.4'
 
 services:
 
   spark-master:
-    image: danielrodriguez/distributed-spark-proof
+    image: danielrodriguez/distributed-spark-proof:threedirs
     command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
     hostname: spark-master
     environment:
@@ -15,6 +15,18 @@ services:
       - 6066:6066
       - 7077:7077
       - 8080:8080
+    volumes:
+      - type: bind
+        read_only: true
+        source: E:\app
+        target: app
+      - type: bind
+        read_only: true
+        source: E:\data
+        target: data
+      - type: bind
+        source: E:\result
+        target: result
     deploy:
       placement:
         constraints: [engine.labels.danir2.machine.role == manager]
@@ -49,3 +61,10 @@ services:
 networks:
   thesisnet:
     driver: overlay
+
+volumes:
+  data:
+    external: true
+    name: my-app-data
+  app:
+  results:
