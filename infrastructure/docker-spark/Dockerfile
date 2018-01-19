@@ -76,7 +76,6 @@ COPY ./conf .
 RUN mkdir app
 RUN mkdir data
 RUN mkdir results
-# COPY apps/simpleapp_2.11-1.0.jar app
 
 WORKDIR $SPARK_HOME
 CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]

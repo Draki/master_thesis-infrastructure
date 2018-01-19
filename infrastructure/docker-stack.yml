@@ -16,16 +16,16 @@ services:
       - 7077:7077
       - 8080:8080
     volumes:
-      - type: binded
+      - type: bind
         read_only: true
-        source: /home/docker/app
+        source: app
         target: /usr/spark-2.2.0/app
-      - type: binded
+      - type: bind
         read_only: true
-        source: /home/docker/data
+        source: data
         target: /usr/spark-2.2.0/data
-      - type: binded
-        source: /home/docker/results
+      - type: bind
+        source: results
         target: /usr/spark-2.2.0/results
     deploy:
       placement:
@@ -61,3 +61,8 @@ services:
 networks:
   thesisnet:
     driver: overlay
+
+volumes:
+  app:
+  data:
+  results:

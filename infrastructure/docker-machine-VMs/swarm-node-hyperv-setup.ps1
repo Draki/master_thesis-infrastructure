@@ -19,7 +19,7 @@ $workers=3
 $GithubBranch="docker_bind_volumes"
 
 # Pointer to the stack-descriptor file
-$DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/$GithubBranch/infrastructure/docker-compose.yml"
+$DockerStackFile="https://raw.githubusercontent.com/Draki/master_thesis/$GithubBranch/infrastructure/docker-stack.yml"
 
 
 
@@ -70,13 +70,11 @@ for ($node=1;$node -le $workers;$node++) {
 docker-machine ssh manager1 "docker node ls"
 
 
-
+# Prepare the node manager1:
 docker-machine ssh manager1 "mkdir app; mkdir data; mkdir results"
-# GET THE DOCKER-STACK.YML FILE:
-# docker-machine scp ../docker-stack.yml manager1:/home/docker/
-# pscp docker-compose.yml docker@manager1:/home/docker/docker-compose.yml
+
+# Get the docker-stack.yml file from github:
 docker-machine ssh manager1 "wget $DockerStackFile --no-check-certificate --output-document docker-stack.yml"
-docker-machine ssh manager1 "docker stack services $StackName"
 
 # And deploy it:
 docker-machine ssh manager1 "docker stack deploy --compose-file docker-stack.yml $StackName"
@@ -89,4 +87,4 @@ echo "======>"
 echo "======> The deployment took: $timeItTook seconds"
 
 echo "======>"
-echo "======> You can access to the web user interface of the spark master at: $manager1ip:8080"
+echo "======> You can access to the web user interface of the spark master at: $manager1ip :8080"
