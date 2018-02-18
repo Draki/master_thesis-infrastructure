@@ -1,5 +1,5 @@
-FROM debian:jessie
-MAINTAINER Getty Images "https://github.com/gettyimages"
+FROM resin/raspberrypi3-debian:jessie
+MAINTAINER Resin.io "https://github.com/resin-io-library/base-images/tree/master/device-base/raspberrypi3/debian/jessie"
 
 RUN apt-get update \
  && apt-get install -y locales \
@@ -70,7 +70,7 @@ RUN curl -sL --retry 3 \
  && chown -R root:root $SPARK_HOME
 
 # Copy configuration files to the image
-COPY ./conf .
+COPY conf .
 
 # Copy developed analyzer app files of master and worker to the image
 RUN mkdir app

@@ -4,7 +4,7 @@
 # At the Hyper-V Manager app on Windows, under "ethernet adapter", create a Virtual Switch (as an "external network") called:
 $SwitchName = "virtualPFC"
 # Run from PowerShell console as Administrator with the command:
-#   powershell -executionpolicy bypass -File C:\Users\drago\IdeaProjects\master_thesisB\infrastructure\docker-machine-VMs\swarm-node-hyperv-setup.ps1
+#   powershell -executionpolicy bypass -File C:\Users\drago\IdeaProjects\master_thesisB\infrastructure\VMs-environment\docker-machine-VMs\swarm-node-hyperv-setup.ps1
 
 # Swarm mode using Docker Machine
 
