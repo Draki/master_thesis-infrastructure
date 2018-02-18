@@ -1,93 +1,68 @@
+version: '3.4'
 
-version: "3"
 services:
 
-  redis:
-    image: redis:alpine
+  spark-master:
+    image: danielrodriguez/distributed-spark-proof:threedirs
+    command: bin/spark-class org.apache.spark.deploy.master.Master -h spark-master
+    hostname: spark-master
+    environment:
+      MASTER: spark://spark-master:7077
+      SPARK_CONF_DIR: /conf/master
+      SPARK_PUBLIC_DNS: localhost
     ports:
-      - "6379"
-    networks:
-      - frontend
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-
-  db:
-    image: postgres:9.4
+      - 4040:4040
+      - 6066:6066
+      - 7077:7077
+      - 8080:8080
     volumes:
-      - db-data:/var/lib/postgresql/data
-    networks:
-      - backend
+      - type: bind
+        read_only: true
+        source: app
+        target: /usr/spark-2.2.0/app
+      - type: bind
+        read_only: true
+        source: data
+        target: /usr/spark-2.2.0/data
+      - type: bind
+        source: results
+        target: /usr/spark-2.2.0/results
     deploy:
       placement:
-        constraints: [node.role == manager]
-
-  vote:
-    image: dockersamples/examplevotingapp_vote:before
-    ports:
-      - 5000:80
+        constraints: [engine.labels.danir2.machine.role == manager]
     networks:
-      - frontend
+      thesisnet:
+        aliases:
+          - spark-master
+
+  spark-worker:
+    image: danielrodriguez/distributed-spark-proof
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
+    hostname: spark-worker
+    environment:
+      SPARK_CONF_DIR: /conf/worker
+      SPARK_WORKER_CORES: 2
+      SPARK_WORKER_MEMORY: 4g
+      SPARK_WORKER_PORT: 8881
+      SPARK_WORKER_WEBUI_PORT: 8081
+      SPARK_PUBLIC_DNS: localhost
     depends_on:
-      - redis
-    deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-      restart_policy:
-        condition: on-failure
-
-  result:
-    image: dockersamples/examplevotingapp_result:before
-    ports:
-      - 5001:80
-    networks:
-      - backend
-    depends_on:
-      - db
-    deploy:
-      replicas: 1
-      update_config:
-        parallelism: 2
-        delay: 10s
-      restart_policy:
-        condition: on-failure
-
-  worker:
-    image: dockersamples/examplevotingapp_worker
-    networks:
-      - frontend
-      - backend
+      - spark-master
     deploy:
       mode: replicated
-      replicas: 1
-      labels: [APP=VOTING]
+      replicas: 3
+      placement:
+        constraints: [engine.labels.danir2.machine.role == worker]
       restart_policy:
         condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
-      placement:
-        constraints: [node.role == manager]
-
-  visualizer:
-    image: dockersamples/visualizer:stable
-    ports:
-      - "8080:8080"
-    stop_grace_period: 1m30s
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-    deploy:
-      placement:
-        constraints: [node.role == manager]
+    networks:
+      thesisnet:
 
 networks:
-  frontend:
-  backend:
+  thesisnet:
+    driver: overlay
 
 volumes:
-  db-data:
+  app:
+  data:
+  results:
