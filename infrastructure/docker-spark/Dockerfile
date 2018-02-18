@@ -74,7 +74,8 @@ COPY ./conf .
 
 # Copy developed analyzer app files of master and worker to the image
 RUN mkdir app
-COPY apps/simpleapp_2.11-1.0.jar app
+RUN mkdir data
+RUN mkdir results
 
 WORKDIR $SPARK_HOME
 CMD ["bin/spark-class", "org.apache.spark.deploy.master.Master"]
